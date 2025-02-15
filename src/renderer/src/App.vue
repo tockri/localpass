@@ -12,6 +12,7 @@ const ipcHandle = () => window.electron.ipcRenderer.send('ping')
     <span class="vue">Vue</span>
     and
     <span class="ts">TypeScript</span>
+    <v-text-field label="Label"></v-text-field>
   </div>
   <p class="tip">Please try pressing <code>F12</code> to open the devTool</p>
   <div class="actions">

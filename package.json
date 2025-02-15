@@ -28,6 +28,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "@mdi/font": "^7.4.47",
     "uuid": "^11.0.5"
   },
   "devDependencies": {
@@ -53,8 +54,10 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.5.2",
     "vite": "^5.3.1",
+    "vite-plugin-vuetify": "^2.1.0",
     "vitest": "^3.0.5",
     "vue": "^3.4.30",
-    "vue-tsc": "^2.0.22"
+    "vue-tsc": "^2.0.22",
+    "vuetify": "^3.7.12"
   }
 }

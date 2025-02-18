@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import { Backend } from '../../../common/interface'
-import { BackendClientFactory } from './BackendClient'
+import { BackendClient } from './BackendClient'
 
-const client = BackendClientFactory.create()
+//const client = BackendClient.instance()
 
 export const useBackendClientStore = defineStore('backend-client', {
   state: () => ({
-    client
+    client: BackendClient.instance()
   }),
   getters: {
     client: (state) => state.client

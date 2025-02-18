@@ -40,6 +40,14 @@ const buildClient = (template: Backend): Backend =>
     return acc
   }, {}) as Backend
 
-export const BackendClientFactory = {
-  create: (): Backend => buildClient(fakeBackend)
+let client: Backend | null = null
+
+export const BackendClient = {
+  instance: (): Backend => {
+    if (!client) {
+      client = buildClient(fakeBackend)
+      console.log('BackendClient: instance created')
+    }
+    return client
+  }
 } as const

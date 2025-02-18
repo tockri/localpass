@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import Versions from './components/Versions.vue'
-import { BackendClientFactory } from './ipc/BackendClient'
+import { useBackendClientStore } from './ipc/BackendClientStore'
 
 const ipcHandle = async () => {
-  const backend = BackendClientFactory.create()
+  const store = useBackendClientStore()
+  const backend = store.client
   const isSigned = await backend.Session.isSigned()
   console.log('isSigned', isSigned)
 }

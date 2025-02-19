@@ -3,28 +3,35 @@ import { ObjectStorage } from './ObjectStrage'
 import { TextFilter } from './TextFilter'
 
 export class FileObjectStorage<T> implements ObjectStorage<T> {
-  private data: T | undefined
+  static async load<T>(
+    path: string,
+    filter: TextFilter,
+    validator: (obj: unknown) => obj is T,
+    defaultData: T
+  ): Promise<FileObjectStorage<T>> {
+    if (FileUtil.exists(path)) {
+      const content = await FileUtil.read(path)
+      const obj = JSON.parse(filter.out(content))
+      if (validator(obj)) {
+        return new FileObjectStorage<T>(path, filter, obj)
+      }
+    } else {
+      return new FileObjectStorage<T>(path, filter, defaultData)
+    }
+    throw new Error('Failed to load data')
+  }
 
-  constructor(
+  private constructor(
     private readonly path: string,
     private readonly filter: TextFilter,
-    private readonly validator: (obj: unknown) => obj is T
+    private data: T
   ) {}
 
   available(): boolean {
     return FileUtil.exists(this.path)
   }
 
-  async get(): Promise<T> {
-    if (this.data === undefined) {
-      const content = await FileUtil.read(this.path)
-      const obj = JSON.parse(this.filter.out(content))
-      if (this.validator(obj)) {
-        this.data = obj
-      } else {
-        throw new Error('Failed to load data')
-      }
-    }
+  get(): Readonly<T> {
     return this.data
   }
 

@@ -1,5 +1,5 @@
 export interface ObjectStorage<T> {
   available(): boolean
-  get(): Promise<T>
+  get(): Readonly<T>
   put(data: T): Promise<void>
 }

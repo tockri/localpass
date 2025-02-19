@@ -5,12 +5,13 @@ import { MockTextFilter } from '../testlib/MockTextFilter'
 import { FileObjectStorage } from './FileObjectStorage'
 import { FileUtil } from './FileUtil'
 
-describe('FileObjectStorage', () => {
+describe('FileObjectStorage', async () => {
   const path = FileUtil.projectPath('testData/FileObjectStorage.test.data')
-  const storage = new FileObjectStorage<readonly PassEntry[]>(
+  const storage = await FileObjectStorage.load<readonly PassEntry[]>(
     path,
     new MockTextFilter(),
-    PassEntryValidator.validate
+    PassEntryValidator.validate,
+    []
   )
 
   beforeAll(() => FileUtil.unlink(path))
@@ -50,7 +51,7 @@ describe('FileObjectStorage', () => {
 
     // Act
     const fileContent = await FileUtil.read(path)
-    const result = await storage.get()
+    const result = storage.get()
 
     // Assert
     expect(fileContent).toEqual('encoded:[{"id":"id","label":"label","attributes":[]}]')
@@ -86,7 +87,7 @@ describe('FileObjectStorage', () => {
 
     // Act
     const fileContent = await FileUtil.read(path)
-    const result = await storage.get()
+    const result = storage.get()
 
     // Assert
     expect(fileContent).toEqual(

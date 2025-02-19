@@ -5,6 +5,7 @@ import { CryptoFilter } from '../util/CryptoFilter'
 import { FileObjectStorage } from '../util/FileObjectStorage'
 import { FileUtil } from '../util/FileUtil'
 import { ObjectStorage } from '../util/ObjectStrage'
+import zxcvbn from 'zxcvbn'
 
 export class SessionServiceImpl implements SessionService {
   private _status: SessionState = 'NotSet'
@@ -14,9 +15,13 @@ export class SessionServiceImpl implements SessionService {
     readonly onCreateStorage: (storage: ObjectStorage<readonly PassEntry[]>) => void
   ) {}
 
+  private dataExists(): boolean {
+    return FileUtil.exists(this.passEntryPath)
+  }
+
   async getStatus(): AsyncResult<SessionState> {
     return resultifyAsync(() => {
-      if (!FileUtil.exists(this.passEntryPath)) {
+      if (!this.dataExists()) {
         this._status = 'NotSet'
         return this._status
       } else {
@@ -25,22 +30,22 @@ export class SessionServiceImpl implements SessionService {
     })
   }
 
-  private createStorage(password: string): FileObjectStorage<readonly PassEntry[]> {
-    return new FileObjectStorage<readonly PassEntry[]>(
+  private createStorage(password: string): Promise<FileObjectStorage<readonly PassEntry[]>> {
+    return FileObjectStorage.load(
       this.passEntryPath,
       new CryptoFilter(password),
-      PassEntryValidator.validate
+      PassEntryValidator.validate,
+      []
     )
   }
 
   signIn(password: string): AsyncResult<void> {
     return resultifyAsync(async () => {
-      if (!FileUtil.exists(this.passEntryPath)) {
+      if (!this.dataExists()) {
         throw new Error('Data not found')
       }
-      const storage = this.createStorage(password)
       try {
-        await storage.get()
+        const storage = await this.createStorage(password)
         this._status = 'SignedIn'
         this.onCreateStorage(storage)
       } catch {
@@ -52,10 +57,12 @@ export class SessionServiceImpl implements SessionService {
 
   signUp(password: string): AsyncResult<void> {
     return resultifyAsync(async () => {
-      if (FileUtil.exists(this.passEntryPath)) {
+      if (this.dataExists()) {
         throw new Error('Data already exists')
+      } else if (zxcvbn(password).score < 3) {
+        throw new Error('Password is too weak')
       }
-      const storage = this.createStorage(password)
+      const storage = await this.createStorage(password)
       await storage.put([])
       this._status = 'SignedIn'
       this.onCreateStorage(storage)

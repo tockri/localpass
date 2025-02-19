@@ -2,6 +2,7 @@
 import SignUpForm from './signUp/SignUpForm.vue'
 import { onMounted } from 'vue'
 import { useSignupModel } from './signUp/useSignUpModel'
+import Home from './list/Home.vue'
 
 const { status, init } = useSignupModel()
 onMounted(init)
@@ -13,5 +14,7 @@ onMounted(init)
     <SignUpForm />
   </template>
   <template v-else-if="status === 'SignedOut'"> SignInForm </template>
-  <template v-else> Home </template>
+  <template v-else>
+    <Home />
+  </template>
 </template>

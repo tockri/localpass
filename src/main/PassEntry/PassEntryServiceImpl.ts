@@ -1,4 +1,4 @@
-import { AsyncResult, EntityInput, PassEntry, PassEntryService } from '@common/interface'
+import { AsyncResult, PassEntry, PassEntryService } from '@common/interface'
 import { resultifyAsync } from '@common/interface/Result'
 import { IdGenerator } from '../util/IdGenerator'
 import { ObjectStorage } from '../util/ObjectStrage'
@@ -25,7 +25,7 @@ export class PassEntryServiceImpl implements PassEntryService {
 
   create(): AsyncResult<PassEntry> {
     return resultifyAsync(async () => {
-      const data = await this.storage.get()
+      const data = this.storage.get()
       const entry: PassEntry = {
         id: this.idGenerator.generate(),
         label: '',
@@ -36,21 +36,23 @@ export class PassEntryServiceImpl implements PassEntryService {
     })
   }
 
-  update(id: string, input: EntityInput<PassEntry>): AsyncResult<void> {
+  update(id: string, input: Partial<PassEntry>): AsyncResult<void> {
     return resultifyAsync(async () => {
-      const data = await this.storage.get()
+      const data = this.storage.get()
       const index = data.findIndex((entry) => entry.id === id)
       if (index === -1) {
         throw new Error(`Not found: ${id}`)
       }
 
-      await this.storage.put(data.map((entry, i) => (i === index ? { ...entry, ...input } : entry)))
+      await this.storage.put(
+        data.map((entry, i) => (i === index ? { ...entry, ...input, id } : entry))
+      )
     })
   }
 
   remove(id: string): AsyncResult<void> {
     return resultifyAsync(async () => {
-      const data = await this.storage.get()
+      const data = this.storage.get()
       const index = data.findIndex((entry) => entry.id === id)
       if (index === -1) {
         throw new Error(`Not found: ${id}`)

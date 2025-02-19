@@ -1,5 +1,5 @@
 import { notImpl } from '../util/Nop'
-import { Entity, EntityInput } from './Entity'
+import { Entity } from './Entity'
 import { AsyncResult } from './Result'
 
 export type PassEntry = Entity &
@@ -17,7 +17,7 @@ export type PassEntryAttribute = Readonly<{
 export interface PassEntryService {
   getAll(): AsyncResult<readonly PassEntry[]>
   create(): AsyncResult<PassEntry>
-  update(id: string, input: EntityInput<PassEntry>): AsyncResult<void>
+  update(id: string, input: Partial<PassEntry>): AsyncResult<void>
   remove(id: string): AsyncResult<void>
 }
 

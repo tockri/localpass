@@ -1,32 +1,17 @@
 <script setup lang="ts">
-import Versions from './components/Versions.vue'
-import { useBackendClientStore } from './ipc/BackendClientStore'
+import SignUpForm from './signUp/SignUpForm.vue'
+import { onMounted } from 'vue'
+import { useSignupModel } from './signUp/useSignUpModel'
 
-const ipcHandle = async () => {
-  const store = useBackendClientStore()
-  const backend = store.client
-  const isSigned = await backend.Session.isSigned()
-  console.log('isSigned', isSigned)
-}
+const { status, init } = useSignupModel()
+onMounted(init)
 </script>
 
 <template>
-  <div class="creator">Powered by electron-vite</div>
-  <div class="text">
-    Build an Electron app with
-    <span class="vue">Vue</span>
-    and
-    <span class="ts">TypeScript</span>
-    <v-text-field label="Label"></v-text-field>
-  </div>
-  <p class="tip">Please try pressing <code>F12</code> to open the devTool</p>
-  <div class="actions">
-    <div class="action">
-      <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">Documentation</a>
-    </div>
-    <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandle">Send IPC</a>
-    </div>
-  </div>
-  <Versions />
+  <template v-if="status === null">loading...</template>
+  <template v-else-if="status === 'NotSet'">
+    <SignUpForm />
+  </template>
+  <template v-else-if="status === 'SignedOut'"> SignInForm </template>
+  <template v-else> Home </template>
 </template>

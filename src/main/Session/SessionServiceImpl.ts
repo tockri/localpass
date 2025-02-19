@@ -1,5 +1,5 @@
-import { AsyncResult, PassEntry, SessionService } from '../../common/interface'
-import { resultifyAsync } from '../../common/interface/Result'
+import { AsyncResult, PassEntry, SessionService, SessionState } from '@common/interface'
+import { resultifyAsync } from '@common/interface/Result'
 import { PassEntryValidator } from '../PassEntry/PassEntryValidator'
 import { CryptoFilter } from '../util/CryptoFilter'
 import { FileObjectStorage } from '../util/FileObjectStorage'
@@ -7,14 +7,21 @@ import { FileUtil } from '../util/FileUtil'
 import { ObjectStorage } from '../util/ObjectStrage'
 
 export class SessionServiceImpl implements SessionService {
+  private _status: SessionState = 'NotSet'
+
   constructor(
     readonly passEntryPath: string,
     readonly onCreateStorage: (storage: ObjectStorage<readonly PassEntry[]>) => void
   ) {}
 
-  async isSigned(): AsyncResult<boolean> {
+  async getStatus(): AsyncResult<SessionState> {
     return resultifyAsync(() => {
-      return FileUtil.exists(this.passEntryPath)
+      if (!FileUtil.exists(this.passEntryPath)) {
+        this._status = 'NotSet'
+        return this._status
+      } else {
+        return this._status
+      }
     })
   }
 
@@ -34,8 +41,10 @@ export class SessionServiceImpl implements SessionService {
       const storage = this.createStorage(password)
       try {
         await storage.get()
+        this._status = 'SignedIn'
         this.onCreateStorage(storage)
-      } catch (e) {
+      } catch {
+        this._status = 'SignedOut'
         throw new Error('Invalid password')
       }
     })
@@ -48,6 +57,7 @@ export class SessionServiceImpl implements SessionService {
       }
       const storage = this.createStorage(password)
       await storage.put([])
+      this._status = 'SignedIn'
       this.onCreateStorage(storage)
     })
   }

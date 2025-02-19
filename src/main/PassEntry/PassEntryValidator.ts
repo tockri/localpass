@@ -1,4 +1,4 @@
-import { PassEntry, PassEntryAttribute } from '../../common/interface'
+import { PassEntry, PassEntryAttribute } from '@common/interface'
 
 const validate = (obj: unknown): obj is readonly PassEntry[] =>
   Array.isArray(obj) && obj.every(isPassEntry)

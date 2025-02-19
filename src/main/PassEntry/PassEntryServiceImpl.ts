@@ -1,5 +1,5 @@
-import { AsyncResult, EntityInput, PassEntry, PassEntryService } from '../../common/interface'
-import { resultifyAsync } from '../../common/interface/Result'
+import { AsyncResult, EntityInput, PassEntry, PassEntryService } from '@common/interface'
+import { resultifyAsync } from '@common/interface/Result'
 import { IdGenerator } from '../util/IdGenerator'
 import { ObjectStorage } from '../util/ObjectStrage'
 

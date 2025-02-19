@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
-import type { Backend } from '../common/interface'
-import { BackendChannel, isBackendMessage } from '../common/interface'
+import type { Backend } from '@common/interface'
+import { BackendChannel, isBackendMessage } from '@common/interface'
 import { PassEntryServiceImpl } from './PassEntry/PassEntryServiceImpl'
 import { SessionServiceImpl } from './Session/SessionServiceImpl'
 import { FileUtil } from './util/FileUtil'

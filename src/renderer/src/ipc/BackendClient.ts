@@ -1,10 +1,6 @@
-import type {
-  Backend,
-  BackendDomain,
-  BackendMessage,
-  BackendMethodName
-} from '../../../common/interface'
-import { BackendChannel, fakeBackend } from '../../../common/interface'
+import { ref, Ref } from 'vue'
+import type { Backend, BackendDomain, BackendMessage, BackendMethodName } from '@common/interface'
+import { BackendChannel, fakeBackend } from '@common/interface'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Func = (...args: any) => any
@@ -42,12 +38,14 @@ const buildClient = (template: Backend): Backend =>
 
 let client: Backend | null = null
 
-export const BackendClient = {
-  instance: (): Backend => {
-    if (!client) {
-      client = buildClient(fakeBackend)
-      console.log('BackendClient: instance created')
-    }
-    return client
+const instance = (): Backend => {
+  if (!client) {
+    client = buildClient(fakeBackend)
+    console.log('BackendClient: instance created')
   }
-} as const
+  return client
+}
+
+export const useBackend = (): Ref<Backend> => {
+  return ref(instance())
+}

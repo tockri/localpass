@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import SignUpForm from './signUp/SignUpForm.vue'
 import { onMounted } from 'vue'
-import { useSignupModel } from './signUp/useSignUpModel'
 import Home from './list/Home.vue'
+import { useSessionModel } from './session/useSessionModel'
+import SignInForm from './signIn/SignInForm.vue'
+import SignUpForm from './signUp/SignUpForm.vue'
 
-const { status, init } = useSignupModel()
-onMounted(init)
+const { status, update } = useSessionModel()
+onMounted(update)
 </script>
 
 <template>
@@ -13,7 +14,9 @@ onMounted(init)
   <template v-else-if="status === 'NotSet'">
     <SignUpForm />
   </template>
-  <template v-else-if="status === 'SignedOut'"> SignInForm </template>
+  <template v-else-if="status === 'SignedOut'">
+    <SignInForm />
+  </template>
   <template v-else>
     <Home />
   </template>

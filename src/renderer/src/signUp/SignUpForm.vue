@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { useSignupModel } from './useSignUpModel'
 import { useSignUpFormModel } from './useSignUpFormModel'
 
-const { submit, errorMessage } = useSignupModel()
-const { password, score } = useSignUpFormModel()
-const onSubmit = (): Promise<void> => submit(password.value)
+const { password, score, submit, errorMessage } = useSignUpFormModel()
 </script>
 
 <template>
   <v-sheet>
-    <form @submit.stop.prevent="onSubmit">
+    <form @submit.stop.prevent="submit">
       <h1>パスワードを設定してください。</h1>
       <v-text-field
         v-model="password"

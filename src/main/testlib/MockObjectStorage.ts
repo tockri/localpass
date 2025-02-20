@@ -7,7 +7,7 @@ export class MockObjectStorage<T> implements ObjectStorage<T> {
     return this._data !== undefined
   }
 
-  async get(): Promise<T> {
+  get(): T {
     if (this._data === undefined) {
       throw new Error('Data is not set')
     }

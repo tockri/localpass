@@ -1,19 +1,25 @@
 import { AsyncResult, PassEntry, SessionService, SessionState } from '@common/interface'
 import { resultifyAsync } from '@common/interface/Result'
+import zxcvbn from 'zxcvbn'
 import { PassEntryValidator } from '../PassEntry/PassEntryValidator'
 import { CryptoFilter } from '../util/CryptoFilter'
 import { FileObjectStorage } from '../util/FileObjectStorage'
 import { FileUtil } from '../util/FileUtil'
 import { ObjectStorage } from '../util/ObjectStrage'
-import zxcvbn from 'zxcvbn'
 
 export class SessionServiceImpl implements SessionService {
-  private _status: SessionState = 'NotSet'
+  private _status: SessionState
 
   constructor(
     readonly passEntryPath: string,
     readonly onCreateStorage: (storage: ObjectStorage<readonly PassEntry[]>) => void
-  ) {}
+  ) {
+    if (!this.dataExists()) {
+      this._status = 'NotSet'
+    } else {
+      this._status = 'SignedOut'
+    }
+  }
 
   private dataExists(): boolean {
     return FileUtil.exists(this.passEntryPath)
@@ -23,10 +29,8 @@ export class SessionServiceImpl implements SessionService {
     return resultifyAsync(() => {
       if (!this.dataExists()) {
         this._status = 'NotSet'
-        return this._status
-      } else {
-        return this._status
       }
+      return this._status
     })
   }
 
@@ -42,7 +46,7 @@ export class SessionServiceImpl implements SessionService {
   signIn(password: string): AsyncResult<void> {
     return resultifyAsync(async () => {
       if (!this.dataExists()) {
-        throw new Error('Data not found')
+        throw new Error('FATAL: Data does not exist')
       }
       try {
         const storage = await this.createStorage(password)
@@ -50,7 +54,7 @@ export class SessionServiceImpl implements SessionService {
         this.onCreateStorage(storage)
       } catch {
         this._status = 'SignedOut'
-        throw new Error('Invalid password')
+        throw new Error('パスワードが間違っています')
       }
     })
   }
@@ -58,14 +62,20 @@ export class SessionServiceImpl implements SessionService {
   signUp(password: string): AsyncResult<void> {
     return resultifyAsync(async () => {
       if (this.dataExists()) {
-        throw new Error('Data already exists')
+        throw new Error('FATAL: Data already exists')
       } else if (zxcvbn(password).score < 3) {
-        throw new Error('Password is too weak')
+        throw new Error('弱いパスワードのため登録できません')
       }
       const storage = await this.createStorage(password)
       await storage.put([])
       this._status = 'SignedIn'
       this.onCreateStorage(storage)
+    })
+  }
+
+  signOut(): AsyncResult<void> {
+    return resultifyAsync(() => {
+      this._status = 'SignedOut'
     })
   }
 }

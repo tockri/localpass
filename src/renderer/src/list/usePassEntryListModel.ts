@@ -16,7 +16,7 @@ export type PassEntryListModel = {
 
 const update = (list: Ref<readonly PassEntry[]>) => async (): Promise<void> => {
   const backend = useBackend()
-  const fetchedR = await backend.value.PassEntry.getAll()
+  const fetchedR = await backend.PassEntry.getAll()
   if (fetchedR.success) {
     list.value = fetchedR.value
   }
@@ -24,7 +24,7 @@ const update = (list: Ref<readonly PassEntry[]>) => async (): Promise<void> => {
 
 const create = (list: Ref<readonly PassEntry[]>) => async (): Promise<void> => {
   const backend = useBackend()
-  const createdR = await backend.value.PassEntry.create()
+  const createdR = await backend.PassEntry.create()
   if (createdR.success) {
     list.value = [...list.value, createdR.value]
   }
@@ -38,7 +38,7 @@ const updateLabel =
     if (!target) {
       return
     }
-    const updatedR = await backend.value.PassEntry.update(id, { label })
+    const updatedR = await backend.PassEntry.update(id, { label })
     if (updatedR.success) {
       list.value = list.value.map((entry) => (entry.id === id ? { ...entry, label } : entry))
     }
@@ -48,7 +48,7 @@ const remove =
   (list: Ref<readonly PassEntry[]>) =>
   async (id: string): Promise<void> => {
     const backend = useBackend()
-    const removedR = await backend.value.PassEntry.remove(id)
+    const removedR = await backend.PassEntry.remove(id)
     if (removedR.success) {
       list.value = list.value.filter((entry) => entry.id !== id)
     }
@@ -65,7 +65,7 @@ const addAttribute =
     const input: Partial<PassEntry> = {
       attributes: [...target.attributes, { type, label: '', value: '' }]
     }
-    const updatedR = await backend.value.PassEntry.update(id, input)
+    const updatedR = await backend.PassEntry.update(id, input)
     if (updatedR.success) {
       list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
     }
@@ -82,7 +82,7 @@ const removeAttribute =
     const input: Partial<PassEntry> = {
       attributes: target.attributes.filter((_, i) => i !== index)
     }
-    const updatedR = await backend.value.PassEntry.update(id, input)
+    const updatedR = await backend.PassEntry.update(id, input)
     if (updatedR.success) {
       list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
     }
@@ -99,7 +99,7 @@ const updateAttributeLabel =
     const input: Partial<PassEntry> = {
       attributes: target.attributes.map((attr, i) => (i === index ? { ...attr, label } : attr))
     }
-    const updatedR = await backend.value.PassEntry.update(id, input)
+    const updatedR = await backend.PassEntry.update(id, input)
     if (updatedR.success) {
       list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
     }
@@ -116,7 +116,7 @@ const updateAttributeValue =
     const input: Partial<PassEntry> = {
       attributes: target.attributes.map((attr, i) => (i === index ? { ...attr, value } : attr))
     }
-    const updatedR = await backend.value.PassEntry.update(id, input)
+    const updatedR = await backend.PassEntry.update(id, input)
     if (updatedR.success) {
       list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
     }

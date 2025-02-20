@@ -10,5 +10,6 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "prettier.configPath": ".prettierrc.yaml"
+  "prettier.configPath": ".prettierrc.yaml",
+  "files.eol": "\n"
 }

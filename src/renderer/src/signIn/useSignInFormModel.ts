@@ -5,7 +5,7 @@ import { ref, Ref } from 'vue'
 const submit = (password: Ref<string>, errorMessage: Ref<string>) => async (): Promise<void> => {
   const backend = useBackend()
   const session = useSessionModel()
-  const result = await backend.value.Session.signIn(password.value)
+  const result = await backend.Session.signIn(password.value)
   if (result.success) {
     errorMessage.value = ''
     await session.update()

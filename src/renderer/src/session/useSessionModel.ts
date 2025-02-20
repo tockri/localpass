@@ -8,7 +8,7 @@ const status: Ref<Status> = ref(null)
 
 const update = async (): Promise<void> => {
   const backend = useBackend()
-  const result = await backend.value.Session.getStatus()
+  const result = await backend.Session.getStatus()
   if (result.success) {
     status.value = result.value
   }

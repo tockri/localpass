@@ -41,10 +41,12 @@ export class MockPassEntryService implements PassEntryService {
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update(_id: string, _input: Partial<PassEntry>): AsyncResult<void> {
     return this.util.wrap('update', () => {})
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   remove(_id: string): AsyncResult<void> {
     return this.util.wrap('remove', () => {})
   }

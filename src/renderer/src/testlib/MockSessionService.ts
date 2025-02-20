@@ -13,6 +13,7 @@ export class MockSessionService implements SessionService {
     return this.util.wrap('getStatus', () => this.status)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   signUp(_password: string): AsyncResult<void> {
     return this.util.wrap('signUp', () => {
       this.status = 'SignedIn'

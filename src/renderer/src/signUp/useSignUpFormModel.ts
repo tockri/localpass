@@ -6,7 +6,7 @@ import zxcvbn from 'zxcvbn'
 const submit = (password: Ref<string>, errorMessage: Ref<string>) => async (): Promise<void> => {
   const backend = useBackend()
   const session = useSessionModel()
-  const result = await backend.value.Session.signUp(password.value)
+  const result = await backend.Session.signUp(password.value)
   if (result.success) {
     errorMessage.value = ''
     await session.update()

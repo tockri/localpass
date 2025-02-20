@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import PassEntryView from './PassEntryView.vue'
 import { usePassEntryListModel } from './usePassEntryListModel'
 
 const model = usePassEntryListModel()

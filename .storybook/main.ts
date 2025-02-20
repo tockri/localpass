@@ -1,7 +1,7 @@
 import type { StorybookConfig } from '@storybook/vue3-vite'
 
 const config: StorybookConfig = {
-  stories: ['../src/renderer/src/**/*.stories.@(ts,md)'],
+  stories: ['../src/renderer/src/**/*.stories.ts'],
   addons: [
     '@storybook/addon-onboarding',
     '@storybook/addon-essentials',

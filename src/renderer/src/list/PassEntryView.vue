@@ -2,7 +2,7 @@
 import { PassEntry } from '@common/interface'
 import { defineProps } from 'vue'
 
-const props = defineProps<{ entry: PassEntry }>()
+defineProps<{ entry: PassEntry }>()
 </script>
 
 <template>

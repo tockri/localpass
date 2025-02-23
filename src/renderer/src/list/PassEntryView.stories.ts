@@ -1,6 +1,6 @@
 import { PassEntry } from '@common/interface'
 import type { Meta, StoryFn } from '@storybook/vue3'
-import { Ref, ref } from 'vue'
+import { nextTick, Ref, ref } from 'vue'
 import PassEntryView from './PassEntryView.vue'
 
 type PassEntryViewType = typeof PassEntryView
@@ -35,10 +35,12 @@ export const Primary: StoryFn<PassEntryViewType> = () => ({
     })
     return {
       entry,
-      onUpdated: (updates: Partial<PassEntry>): void => {
+      onUpdated: async (updates: Partial<PassEntry>): Promise<void> => {
         entry.value = { ...entry.value, ...updates }
+        await nextTick()
+        console.log('Updated:', entry.value)
       }
     }
   },
-  template: '<PassEntryView :entry="entry" :onUpdated="onUpdated" />'
+  template: '<PassEntryView :entry="entry" @updated="onUpdated" />'
 })

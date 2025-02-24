@@ -10,13 +10,13 @@ const props = defineProps<{
 const entry = ref(props.entry)
 
 const emit = defineEmits<{
-  (e: 'updated', entry: Partial<PassEntry>): void
+  (e: 'updated', id: string, entry: Partial<PassEntry>): void
   (e: 'remove', id: string): void
 }>()
 
 const update = (updated: Partial<PassEntry>): void => {
   entry.value = { ...entry.value, ...updated }
-  emit('updated', updated)
+  emit('updated', props.entry.id, updated)
 }
 
 const updateAttribute = (idx: number, updated: Partial<PassEntryAttribute>): Promise<void> => {

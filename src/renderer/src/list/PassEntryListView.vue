@@ -11,7 +11,7 @@ onMounted(lm.init)
 <template>
   <div class="d-flex ga-2 flex-column">
     <div v-for="(entry, idx) in list" :key="idx">
-      <PassEntryView :entry="entry" @remove="(id) => lm.remove(id)" />
+      <PassEntryView :entry="entry" @remove="lm.remove" @updated="lm.update" />
     </div>
     <div>
       <v-btn @click="lm.create">追加</v-btn>

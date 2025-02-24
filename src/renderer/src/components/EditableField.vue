@@ -36,10 +36,17 @@ const click = (): void => {
 <template>
   <template v-if="!editing">
     <div class="d-flex ga-1 pa-2 align-center editable-field">
-      <div v-if="wrapDisplay" class="flex-grow-1 wrap-display" @click="click">
-        {{ displayValue }}
+      <div v-if="wrapDisplay" readonly class="flex-grow-1 wrap-display" @click="click">
+        <template v-if="displayValue">{{ displayValue }}</template>
+        <template v-else>&nbsp;</template>
       </div>
-      <input v-else readonly :value="displayValue" class="w-100 nowrap-display" @click="click" />
+      <input
+        v-else
+        readonly
+        :value="displayValue"
+        class="w-100 nowrap-display cursor-default"
+        @click="click"
+      />
 
       <template v-if="showIcon">
         <v-icon :icon="showIcon" size="small" @click="em.toggle" />
@@ -82,9 +89,6 @@ const click = (): void => {
   }
   .edit-button {
     visibility: hidden;
-  }
-  input {
-    cursor: default;
   }
 }
 .editable-field:hover {

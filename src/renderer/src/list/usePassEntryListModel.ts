@@ -1,4 +1,4 @@
-import { PassEntry, PassEntryAttribute } from '@common/interface'
+import { PassEntry } from '@common/interface'
 import { useBackend } from '@renderer/ipc/BackendClient'
 import { nextTick, ref, Ref } from 'vue'
 
@@ -6,15 +6,11 @@ export type PassEntryListModel = {
   passEntryList: Ref<readonly PassEntry[]>
   init: () => Promise<void>
   create: () => Promise<void>
-  updateLabel: (id: string, label: string) => Promise<void>
+  update: (id: string, input: Partial<PassEntry>) => Promise<void>
   remove: (id: string) => Promise<void>
-  addAttribute: (id: string, type: PassEntryAttribute['type']) => Promise<void>
-  removeAttribute: (id: string, index: number) => Promise<void>
-  updateAttributeLabel: (id: string, index: number, label: string) => Promise<void>
-  updateAttributeValue: (id: string, index: number, value: string) => Promise<void>
 }
 
-const update = (list: Ref<readonly PassEntry[]>) => async (): Promise<void> => {
+const init = (list: Ref<readonly PassEntry[]>) => async (): Promise<void> => {
   const backend = useBackend()
   const fetchedR = await backend.PassEntry.getAll()
   if (fetchedR.success) {
@@ -30,17 +26,17 @@ const create = (list: Ref<readonly PassEntry[]>) => async (): Promise<void> => {
   }
 }
 
-const updateLabel =
+const update =
   (list: Ref<readonly PassEntry[]>) =>
-  async (id: string, label: string): Promise<void> => {
+  async (id: string, input: Partial<PassEntry>): Promise<void> => {
     const backend = useBackend()
     const target = list.value.find((entry) => entry.id === id)
     if (!target) {
       return
     }
-    const updatedR = await backend.PassEntry.update(id, { label })
+    const updatedR = await backend.PassEntry.update(id, input)
     if (updatedR.success) {
-      list.value = list.value.map((entry) => (entry.id === id ? { ...entry, label } : entry))
+      list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
     }
   }
 
@@ -55,85 +51,13 @@ const remove =
     await nextTick()
   }
 
-const addAttribute =
-  (list: Ref<readonly PassEntry[]>) =>
-  async (id: string, type: PassEntryAttribute['type']): Promise<void> => {
-    const backend = useBackend()
-    const target = list.value.find((entry) => entry.id === id)
-    if (!target) {
-      return
-    }
-    const input: Partial<PassEntry> = {
-      attributes: [...target.attributes, { type, label: '', value: '' }]
-    }
-    const updatedR = await backend.PassEntry.update(id, input)
-    if (updatedR.success) {
-      list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
-    }
-  }
-
-const removeAttribute =
-  (list: Ref<readonly PassEntry[]>) =>
-  async (id: string, index: number): Promise<void> => {
-    const backend = useBackend()
-    const target = list.value.find((entry) => entry.id === id)
-    if (!target) {
-      return
-    }
-    const input: Partial<PassEntry> = {
-      attributes: target.attributes.filter((_, i) => i !== index)
-    }
-    const updatedR = await backend.PassEntry.update(id, input)
-    if (updatedR.success) {
-      list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
-    }
-  }
-
-const updateAttributeLabel =
-  (list: Ref<readonly PassEntry[]>) =>
-  async (id: string, index: number, label: string): Promise<void> => {
-    const backend = useBackend()
-    const target = list.value.find((entry) => entry.id === id)
-    if (!target) {
-      return
-    }
-    const input: Partial<PassEntry> = {
-      attributes: target.attributes.map((attr, i) => (i === index ? { ...attr, label } : attr))
-    }
-    const updatedR = await backend.PassEntry.update(id, input)
-    if (updatedR.success) {
-      list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
-    }
-  }
-
-const updateAttributeValue =
-  (list: Ref<readonly PassEntry[]>) =>
-  async (id: string, index: number, value: string): Promise<void> => {
-    const backend = useBackend()
-    const target = list.value.find((entry) => entry.id === id)
-    if (!target) {
-      return
-    }
-    const input: Partial<PassEntry> = {
-      attributes: target.attributes.map((attr, i) => (i === index ? { ...attr, value } : attr))
-    }
-    const updatedR = await backend.PassEntry.update(id, input)
-    if (updatedR.success) {
-      list.value = list.value.map((entry) => (entry.id === id ? { ...entry, ...input } : entry))
-    }
-  }
-
 export const usePassEntryListModel = (): PassEntryListModel => {
   const list = ref<readonly PassEntry[]>([])
   return {
     passEntryList: list,
-    init: update(list),
+    init: init(list),
     create: create(list),
-    updateLabel: updateLabel(list),
-    remove: remove(list),
-    addAttribute: addAttribute(list),
-    removeAttribute: removeAttribute(list),
-    updateAttributeLabel: updateAttributeLabel(list),
-    updateAttributeValue: updateAttributeValue(list)
+    update: update(list),
+    remove: remove(list)
   }
 }

@@ -1,7 +1,9 @@
 import { computed, nextTick, ref, Ref } from 'vue'
+import { useToast } from './useToast'
 
-type EditModel = {
+type EditableFieldModel = {
   editing: Ref<boolean>
+  innerValue: Ref<string>
   displayValue: Ref<string>
   editingValue: Ref<string>
   showing: Ref<boolean>
@@ -14,19 +16,20 @@ type EditModel = {
   copy: () => void
 }
 
-export const useEditModel = (arg: {
+export const useEditableFieldModel = (arg: {
   value: string
   type?: 'text' | 'password'
+  copyMessage?: string
   onSubmit: (value: string) => void
-  onCopied: ((value: string) => void) | null | false
-}): EditModel => {
+}): EditableFieldModel => {
   const editing = ref(false)
+  const innerValue = ref(arg.value)
   const editingValue = ref(arg.value)
   const showing = ref(false)
   const displayValue = computed(() => {
     return arg.type === 'password' && !showing.value
-      ? '•'.repeat(Math.min(12, arg.value.length))
-      : arg.value
+      ? '•'.repeat(Math.min(12, innerValue.value.length))
+      : innerValue.value
   })
   const show = (): Promise<void> => {
     showing.value = true
@@ -42,7 +45,7 @@ export const useEditModel = (arg: {
   }
   const start = (): Promise<void> => {
     editing.value = true
-    editingValue.value = arg.value
+    editingValue.value = innerValue.value
     return nextTick()
   }
   const cancel = (): Promise<void> => {
@@ -51,19 +54,21 @@ export const useEditModel = (arg: {
   }
   const submit = (): Promise<void> => {
     arg.onSubmit(editingValue.value)
-    cancel()
-    return nextTick()
+    innerValue.value = editingValue.value
+    return cancel()
   }
   // クリップボードにコピー
+  const tm = useToast()
   const copy = (): void => {
-    if (arg.onCopied) {
+    if (arg.copyMessage) {
       navigator.clipboard.writeText(arg.value)
-      arg.onCopied(arg.value)
+      tm.show(arg.copyMessage)
     }
   }
   return {
     editing,
     editingValue,
+    innerValue,
     displayValue,
     showing,
     show,
@@ -73,39 +78,5 @@ export const useEditModel = (arg: {
     cancel,
     submit,
     copy
-  }
-}
-
-type DisplayModel = {
-  value: Ref<string>
-  showing: Ref<boolean>
-  show: () => Promise<void>
-  hide: () => Promise<void>
-}
-
-export const useDisplayModel = (arg: {
-  value: string
-  type: 'text' | 'password'
-}): DisplayModel => {
-  const showing = ref(false)
-  const show = (): Promise<void> => {
-    showing.value = true
-    return nextTick()
-  }
-  const hide = (): Promise<void> => {
-    showing.value = false
-    return nextTick()
-  }
-  const value = computed(() => {
-    return arg.type === 'password' && !showing.value
-      ? '•'.repeat(Math.min(12, arg.value.length))
-      : arg.value
-  })
-
-  return {
-    value,
-    showing,
-    show,
-    hide
   }
 }

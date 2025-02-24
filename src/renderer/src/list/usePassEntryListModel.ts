@@ -1,9 +1,9 @@
 import { PassEntry, PassEntryAttribute } from '@common/interface'
 import { useBackend } from '@renderer/ipc/BackendClient'
-import { ref, Ref } from 'vue'
+import { nextTick, ref, Ref } from 'vue'
 
 export type PassEntryListModel = {
-  list: Ref<readonly PassEntry[]>
+  passEntryList: Ref<readonly PassEntry[]>
   init: () => Promise<void>
   create: () => Promise<void>
   updateLabel: (id: string, label: string) => Promise<void>
@@ -52,6 +52,7 @@ const remove =
     if (removedR.success) {
       list.value = list.value.filter((entry) => entry.id !== id)
     }
+    await nextTick()
   }
 
 const addAttribute =
@@ -125,7 +126,7 @@ const updateAttributeValue =
 export const usePassEntryListModel = (): PassEntryListModel => {
   const list = ref<readonly PassEntry[]>([])
   return {
-    list,
+    passEntryList: list,
     init: update(list),
     create: create(list),
     updateLabel: updateLabel(list),

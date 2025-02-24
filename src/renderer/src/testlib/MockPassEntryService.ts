@@ -25,6 +25,22 @@ export class MockPassEntryService implements PassEntryService {
             value: 'value2'
           }
         ]
+      } satisfies PassEntry,
+      {
+        id: '2',
+        label: 'label2',
+        attributes: [
+          {
+            type: 'string',
+            label: 'attr3',
+            value: 'value3'
+          },
+          {
+            type: 'password',
+            label: 'attr4',
+            value: 'value4'
+          }
+        ]
       } satisfies PassEntry
     ])
   }
@@ -34,7 +50,7 @@ export class MockPassEntryService implements PassEntryService {
       'create',
       () =>
         ({
-          id: '2',
+          id: '3',
           label: '',
           attributes: []
         }) satisfies PassEntry

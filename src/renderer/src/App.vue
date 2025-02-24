@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import Home from './list/Home.vue'
+import PassEntryListView from './list/PassEntryListView.vue'
 import { useSessionModel } from './session/useSessionModel'
 import SignInForm from './signIn/SignInForm.vue'
 import SignUpForm from './signUp/SignUpForm.vue'
@@ -18,6 +18,6 @@ onMounted(update)
     <SignInForm />
   </template>
   <template v-else>
-    <Home />
+    <pass-entry-list-view />
   </template>
 </template>

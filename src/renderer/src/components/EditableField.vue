@@ -1,38 +1,45 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useEditModel } from './EditableFieldLogic'
+import { useEditableFieldModel } from './useEditableFieldModel'
 
 const props = defineProps<{
   value: string
   type?: 'text' | 'password'
-  copiable?: boolean
+  copyMessage?: string
   wrapDisplay?: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'changed', value: string): void
-  (e: 'copied', value: string): void
+  (e: 'changed', value: string): Promise<void>
 }>()
 
-const { editing, editingValue, showing, displayValue, ...em } = useEditModel({
+const { editing, editingValue, showing, displayValue, ...em } = useEditableFieldModel({
   value: props.value,
   type: props.type,
-  onSubmit: (value) => emit('changed', value),
-  onCopied: props.copiable && ((value): void => emit('copied', value))
+  copyMessage: props.copyMessage,
+  onSubmit: (value) => emit('changed', value)
 })
 
 const showIcon = computed(() =>
   props.type === 'password' ? (!showing.value ? 'mdi:mdi-eye' : 'mdi:mdi-eye-off') : null
 )
+
+const click = (): void => {
+  if (displayValue.value.trim() === '') {
+    em.start()
+  } else {
+    em.copy()
+  }
+}
 </script>
 
 <template>
   <template v-if="!editing">
     <div class="d-flex ga-1 pa-2 align-center editable-field">
-      <div v-if="wrapDisplay" class="flex-grow-1 wrap-display" @click="em.copy">
+      <div v-if="wrapDisplay" class="flex-grow-1 wrap-display" @click="click">
         {{ displayValue }}
       </div>
-      <input v-else readonly :value="displayValue" class="w-100 nowrap-display" />
+      <input v-else readonly :value="displayValue" class="w-100 nowrap-display" @click="click" />
 
       <template v-if="showIcon">
         <v-icon :icon="showIcon" size="small" @click="em.toggle" />
@@ -56,7 +63,7 @@ const showIcon = computed(() =>
         @blur="em.cancel"
       />
       <template v-if="showIcon">
-        <v-icon :icon="showIcon" size="small" @mousedown.prevent="em.toggle" />
+        <v-icon :icon="showIcon" size="small" @mousedown.prevent.stop="em.toggle" />
       </template>
     </div>
   </template>
@@ -75,6 +82,9 @@ const showIcon = computed(() =>
   }
   .edit-button {
     visibility: hidden;
+  }
+  input {
+    cursor: default;
   }
 }
 .editable-field:hover {

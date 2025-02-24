@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PassEntry, PassEntryAttribute } from '@common/interface'
 import EditableField from '@renderer/components/EditableField.vue'
-import { defineProps, nextTick, ref } from 'vue'
+import { defineProps, nextTick, ref, toRaw } from 'vue'
 
 const props = defineProps<{
   entry: PassEntry
@@ -15,12 +15,12 @@ const emit = defineEmits<{
 }>()
 
 const update = (updated: Partial<PassEntry>): void => {
-  entry.value = { ...entry.value, ...updated }
+  entry.value = { ...toRaw(entry.value), ...updated }
   emit('updated', props.entry.id, updated)
 }
 
 const updateAttribute = (idx: number, updated: Partial<PassEntryAttribute>): Promise<void> => {
-  const newAttributes = [...entry.value.attributes]
+  const newAttributes = [...toRaw(entry.value).attributes]
   newAttributes[idx] = { ...newAttributes[idx], ...updated }
   update({ attributes: newAttributes })
   return nextTick()
@@ -28,7 +28,7 @@ const updateAttribute = (idx: number, updated: Partial<PassEntryAttribute>): Pro
 
 const addAttribute = (): Promise<void> => {
   const newAttributes = [
-    ...entry.value.attributes,
+    ...toRaw(entry.value).attributes,
     { label: '', value: '', type: 'string' } satisfies PassEntryAttribute
   ]
   update({ attributes: newAttributes })
@@ -36,7 +36,7 @@ const addAttribute = (): Promise<void> => {
 }
 
 const removeAttribute = (idx: number): Promise<void> => {
-  const newAttributes = [...entry.value.attributes]
+  const newAttributes = [...toRaw(entry.value).attributes]
   newAttributes.splice(idx, 1)
   update({ attributes: newAttributes })
   return nextTick()

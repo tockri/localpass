@@ -29,7 +29,18 @@ export class PassEntryServiceImpl implements PassEntryService {
       const entry: PassEntry = {
         id: this.idGenerator.generate(),
         label: '',
-        attributes: []
+        attributes: [
+          {
+            type: 'string',
+            label: 'userName',
+            value: ''
+          },
+          {
+            type: 'password',
+            label: 'password',
+            value: ''
+          }
+        ]
       }
       await this.storage.put([...data, entry])
       return entry

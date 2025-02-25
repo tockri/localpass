@@ -3,7 +3,7 @@ import { useToast } from './useToast'
 
 type EditableFieldModel = {
   editing: Ref<boolean>
-  innerValue: Ref<string>
+  //  innerValue: Ref<string>
   displayValue: Ref<string>
   editingValue: Ref<string>
   showing: Ref<boolean>
@@ -61,14 +61,14 @@ export const useEditableFieldModel = (arg: {
   const tm = useToast()
   const copy = (): void => {
     if (arg.copyMessage) {
-      navigator.clipboard.writeText(arg.value)
+      navigator.clipboard.writeText(innerValue.value)
       tm.show(arg.copyMessage)
     }
   }
   return {
     editing,
     editingValue,
-    innerValue,
+    //innerValue,
     displayValue,
     showing,
     show,

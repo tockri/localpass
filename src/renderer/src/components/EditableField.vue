@@ -65,8 +65,8 @@ const click = (): void => {
         single-line
         :type="showing ? 'text' : props.type || 'text'"
         class="pa-0"
-        @keyup.enter="em.submit"
-        @keyup.esc="em.cancel"
+        @keydown.enter="em.submit"
+        @keydown.esc="em.cancel"
         @blur="em.cancel"
       />
       <template v-if="showIcon">

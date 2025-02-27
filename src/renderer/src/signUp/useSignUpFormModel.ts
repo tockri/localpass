@@ -17,22 +17,42 @@ const submit = (password: Ref<string>, errorMessage: Ref<string>) => async (): P
 
 type SignUpFormModel = Readonly<{
   password: Ref<string>
+  confirmation: Ref<string>
   errorMessage: Ref<string>
+  confirmationErrorMessage: ComputedRef<string>
+  isSubmittable: ComputedRef<boolean>
   score: ComputedRef<number>
   submit: () => Promise<void>
 }>
 
 export const useSignUpFormModel = (): SignUpFormModel => {
   const password = ref('')
+  const confirmation = ref('')
   const score = computed(() => {
     const z = zxcvbn(password.value)
     return z.score
   })
   const errorMessage = ref('')
+  const confirmationErrorMessage = computed(() => {
+    if (confirmation.value.length > 0 && password.value !== confirmation.value) {
+      return 'パスワードが一致しません。'
+    }
+    return ''
+  })
+  const isSubmittable = computed(
+    () =>
+      password.value.length > 0 &&
+      confirmation.value.length > 0 &&
+      password.value === confirmation.value &&
+      score.value >= 3
+  )
   return {
     password,
+    confirmation,
+    confirmationErrorMessage,
     errorMessage,
     score,
+    isSubmittable,
     submit: submit(password, errorMessage)
   }
 }

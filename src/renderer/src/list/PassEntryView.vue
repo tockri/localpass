@@ -17,24 +17,23 @@ const update = (updated: Partial<PassEntry>): void => {
 }
 
 const updateAttribute = (idx: number, updated: Partial<PassEntryAttribute>): Promise<void> => {
-  const newAttributes = [...props.entry.attributes]
-  newAttributes[idx] = { ...newAttributes[idx], ...updated }
-  update({ attributes: newAttributes })
+  Object.assign(props.entry.attributes[idx], updated)
+  update({ attributes: props.entry.attributes })
   return nextTick()
 }
 
 const addAttribute = (): Promise<void> => {
-  const newAttributes = [
-    ...props.entry.attributes,
-    { label: '', value: '', type: 'string' } satisfies PassEntryAttribute
-  ]
+  const newAttributes = props.entry.attributes.concat({
+    label: '',
+    value: '',
+    type: 'string'
+  } satisfies PassEntryAttribute)
   update({ attributes: newAttributes })
   return nextTick()
 }
 
 const removeAttribute = (idx: number): Promise<void> => {
-  const newAttributes = [...props.entry.attributes]
-  newAttributes.splice(idx, 1)
+  const newAttributes = props.entry.attributes.toSpliced(idx, 1)
   update({ attributes: newAttributes })
   return nextTick()
 }

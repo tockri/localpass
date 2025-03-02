@@ -1,7 +1,7 @@
 import { PassEntry } from '@common/interface'
 import { useBackend } from '@renderer/ipc/BackendClient'
 import { deepToRaw } from '@renderer/util/deepToRaw'
-import { nextTick, Ref, ref } from 'vue'
+import { nextTick, ref, Ref } from 'vue'
 
 export type PassEntryListModel = {
   passEntryList: Ref<readonly PassEntry[]>
@@ -35,7 +35,7 @@ const update =
     if (idx >= 0) {
       const updatedR = await backend.PassEntry.update(id, deepToRaw(input))
       if (updatedR.success) {
-        list.value.splice(idx, 1, { ...list.value[idx], ...input })
+        Object.assign(list.value[idx], input)
       }
     }
   }

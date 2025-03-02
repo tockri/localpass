@@ -67,7 +67,7 @@ const click = (): void => {
         class="pa-0"
         @keydown.enter="em.submit"
         @keydown.esc="em.cancel"
-        @blur="em.cancel"
+        @blur="em.submit"
       />
       <template v-if="showIcon">
         <v-icon :icon="showIcon" size="small" @mousedown.prevent.stop="em.toggle" />

@@ -52,7 +52,18 @@ export class MockPassEntryService implements PassEntryService {
         ({
           id: '3',
           label: '',
-          attributes: []
+          attributes: [
+            {
+              type: 'string',
+              label: 'userName',
+              value: ''
+            },
+            {
+              type: 'password',
+              label: 'password',
+              value: ''
+            }
+          ]
         }) satisfies PassEntry
     )
   }

@@ -22,11 +22,21 @@ const updateAttribute = (idx: number, updated: Partial<PassEntryAttribute>): Pro
   return nextTick()
 }
 
-const addAttribute = (): Promise<void> => {
+const addStringAttribute = (): Promise<void> => {
   const newAttributes = props.entry.attributes.concat({
     label: '',
     value: '',
     type: 'string'
+  } satisfies PassEntryAttribute)
+  update({ attributes: newAttributes })
+  return nextTick()
+}
+
+const addPasswordAttribute = (): Promise<void> => {
+  const newAttributes = props.entry.attributes.concat({
+    label: '',
+    value: '',
+    type: 'password'
   } satisfies PassEntryAttribute)
   update({ attributes: newAttributes })
   return nextTick()
@@ -78,9 +88,19 @@ const removeAttribute = (idx: number): Promise<void> => {
         </div>
       </div>
       <div class="table-row">
-        <v-btn size="small" variant="text" @click="addAttribute">
+        <v-btn size="small" variant="text">
           <v-icon icon="mdi:mdi-plus" />
           属性を追加
+          <v-menu activator="parent">
+            <v-list>
+              <v-list-item @click="addStringAttribute">
+                <v-list-item-title>テキスト</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="addPasswordAttribute">
+                <v-list-item-title>パスワード</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-btn>
       </div>
     </div>

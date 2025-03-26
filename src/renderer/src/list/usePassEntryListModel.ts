@@ -2,6 +2,7 @@ import { PassEntry } from '@common/interface'
 import { useBackend } from '@renderer/ipc/BackendClient'
 import { deepToRaw } from '@renderer/util/deepToRaw'
 import { nextTick, ref, Ref } from 'vue'
+import { DropResult } from 'vue-dndrop'
 
 export type PassEntryListModel = {
   passEntryList: Ref<readonly PassEntry[]>
@@ -9,6 +10,7 @@ export type PassEntryListModel = {
   create: () => Promise<void>
   update: (id: string, input: Partial<PassEntry>) => Promise<void>
   remove: (id: string) => Promise<void>
+  arrange: (dropResult: DropResult) => Promise<void>
 }
 
 const init = (list: Ref<PassEntry[]>) => async (): Promise<void> => {
@@ -54,6 +56,19 @@ const remove =
     await nextTick()
   }
 
+const arrange =
+  (list: Ref<PassEntry[]>) =>
+  async (dropResult: DropResult): Promise<void> => {
+    console.log({ dropResult, list })
+    const target = list.value[dropResult.removedIndex]
+    list.value.splice(dropResult.removedIndex, 1)
+    const dstIndex =
+      dropResult.addedIndex > dropResult.removedIndex
+        ? dropResult.addedIndex - 1
+        : dropResult.addedIndex
+    list.value.splice(dstIndex, 0, target)
+  }
+
 export const usePassEntryListModel = (): PassEntryListModel => {
   const list = ref<PassEntry[]>([])
   return {
@@ -61,6 +76,7 @@ export const usePassEntryListModel = (): PassEntryListModel => {
     init: init(list),
     create: create(list),
     update: update(list),
-    remove: remove(list)
+    remove: remove(list),
+    arrange: arrange(list)
   }
 }

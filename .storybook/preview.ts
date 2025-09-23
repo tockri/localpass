@@ -1,5 +1,4 @@
-import type { Preview } from '@storybook/vue3'
-import { setup } from '@storybook/vue3'
+import { Preview, setup } from '@storybook/vue3-vite'
 import { registerPlugins } from '../src/renderer/src/registerPlugins'
 import { withVuetifyTheme } from './withVeutifyTheme.decorator'
 

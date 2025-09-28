@@ -21,4 +21,3 @@ onMounted(update)
     <entry-list-view />
   </template>
 </template>
-

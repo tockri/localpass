@@ -1,9 +1,8 @@
-import { computed, nextTick, ref, Ref } from 'vue'
+import { computed, ModelRef, nextTick, ref, Ref, unref, watch } from 'vue'
 import { useToast } from './useToast'
 
 type EditableFieldModel = {
   editing: Ref<boolean>
-  //  innerValue: Ref<string>
   displayValue: Ref<string>
   editingValue: Ref<string>
   showing: Ref<boolean>
@@ -16,19 +15,33 @@ type EditableFieldModel = {
   copy: () => void
 }
 
+const normalize = (value: string | null | undefined): string => value ?? ''
+
 export const useEditableFieldModel = (arg: {
-  value: string
+  model: ModelRef<string>
   type?: 'text' | 'password'
   copyMessage?: string
-  onSubmit: (value: string) => void
 }): EditableFieldModel => {
+  const initialValue = normalize(unref(arg.model))
   const editing = ref(false)
-  const innerValue = ref(arg.value)
-  const editingValue = ref(arg.value)
+  const innerValue = ref(initialValue)
+  const editingValue = ref(initialValue)
   const showing = ref(false)
+  const copyEnabled = !!arg.copyMessage
+
+  watch(
+    () => initialValue,
+    (newInitialValue) => {
+      innerValue.value = newInitialValue
+      if (!editing.value) {
+        editingValue.value = newInitialValue
+      }
+    }
+  )
+
   const displayValue = computed(() => {
     return arg.type === 'password' && !showing.value
-      ? '•'.repeat(Math.min(12, innerValue.value.length))
+      ? '*'.repeat(Math.min(12, innerValue.value.length))
       : innerValue.value
   })
   const show = (): Promise<void> => {
@@ -48,27 +61,28 @@ export const useEditableFieldModel = (arg: {
     editingValue.value = innerValue.value
     return nextTick()
   }
-  const cancel = (): Promise<void> => {
+  const endEdit = (): Promise<void> => {
     editing.value = false
     return nextTick()
   }
+  const cancel = endEdit
   const submit = (): Promise<void> => {
-    arg.onSubmit(editingValue.value)
+    arg.model.value = editingValue.value
     innerValue.value = editingValue.value
-    return cancel()
+    return endEdit()
   }
-  // クリップボードにコピー
   const tm = useToast()
   const copy = (): void => {
-    if (arg.copyMessage) {
+    if (copyEnabled) {
       navigator.clipboard.writeText(innerValue.value)
-      tm.show(arg.copyMessage)
+      if (arg.copyMessage) {
+        tm.show(arg.copyMessage)
+      }
     }
   }
   return {
     editing,
     editingValue,
-    //innerValue,
     displayValue,
     showing,
     show,

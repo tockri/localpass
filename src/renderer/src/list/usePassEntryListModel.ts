@@ -5,7 +5,7 @@ import { nextTick, ref, Ref } from 'vue'
 import { DropResult } from 'vue-dndrop'
 
 export type PassEntryListModel = {
-  passEntryList: Ref<readonly PassEntry[]>
+  passEntryList: Ref<PassEntry[]>
   init: () => Promise<void>
   create: () => Promise<void>
   update: (id: string, input: Partial<PassEntry>) => Promise<void>
@@ -17,7 +17,7 @@ const init = (list: Ref<PassEntry[]>) => async (): Promise<void> => {
   const backend = useBackend()
   const fetchedR = await backend.PassEntry.getAll()
   if (fetchedR.success) {
-    list.value.push(...fetchedR.value)
+    list.value = fetchedR.value.slice()
   }
 }
 

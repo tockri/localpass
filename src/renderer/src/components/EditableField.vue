@@ -3,21 +3,17 @@ import { computed } from 'vue'
 import { useEditableFieldModel } from './useEditableFieldModel'
 
 const props = defineProps<{
-  value: string
   type?: 'text' | 'password'
   copyMessage?: string
   wrapDisplay?: boolean
 }>()
 
-const emit = defineEmits<{
-  (e: 'changed', value: string): Promise<void>
-}>()
+const model = defineModel<string>({ default: '' })
 
 const { editing, editingValue, showing, displayValue, ...em } = useEditableFieldModel({
-  value: props.value,
+  model,
   type: props.type,
-  copyMessage: props.copyMessage,
-  onSubmit: (value) => emit('changed', value)
+  copyMessage: props.copyMessage
 })
 
 const showIcon = computed(() =>

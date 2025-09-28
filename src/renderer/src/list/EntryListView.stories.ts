@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 
-import PassEntryListView from './PassEntryListView.vue'
+import EntryListView from './EntryListView.vue'
 
 const meta = {
-  title: 'List/PassEntryListView',
-  component: PassEntryListView,
+  title: 'List/EntryListView',
+  component: EntryListView,
   tags: [],
   argTypes: {},
   args: {}
-} satisfies Meta<typeof PassEntryListView>
+} satisfies Meta<typeof EntryListView>
 
 export default meta
 type Story = StoryObj<typeof meta>

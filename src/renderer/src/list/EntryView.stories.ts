@@ -1,9 +1,10 @@
-import type { Meta, StoryFn } from '@storybook/vue3'
+import type { Meta, StoryObj } from '@storybook/vue3'
+import { ref } from 'vue'
 
-import EntryView from './EntryView.vue'
 import type { PassEntry } from '@common/interface'
+import EntryView from './EntryView.vue'
 
-const entry: PassEntry = {
+const sampleEntry: PassEntry = {
   id: 'sample-id',
   label: 'Sample Entry',
   attributes: [
@@ -20,8 +21,22 @@ const meta = {
 
 export default meta
 
-export const Primary: StoryFn<typeof EntryView> = () => ({
-  components: { EntryView },
-  data: () => ({ entry }),
-  template: "<EntryView :entry='entry' @updated='() => {}' @remove='() => {}' />"
-})
+type Story = StoryObj<typeof meta>
+
+export const Primary: Story = {
+  args: {
+    entry: sampleEntry
+  },
+  render: (args) => ({
+    components: { EntryView },
+    setup() {
+      const active = ref(args.entry.id)
+      return { args, active }
+    },
+    template: `
+      <v-expansion-panels v-model="active">
+        <EntryView v-bind="args" />
+      </v-expansion-panels>
+    `
+  })
+}

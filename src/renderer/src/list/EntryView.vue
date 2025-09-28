@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panel class="entry-panel">
+  <v-expansion-panel class="entry-panel" :value="entry.id">
     <v-expansion-panel-title expand-icon="mdi:mdi-menu-down">
       <div class="d-flex align-center w-100">
         <span class="text-body-1 text-high-emphasis">{{ displayLabel }}</span>
@@ -10,7 +10,7 @@
       </div>
     </v-expansion-panel-title>
     <v-expansion-panel-text>
-      <div class="d-flex flex-column ga-4">
+      <div class="entry-body d-flex flex-column ga-4">
         <div class="d-flex align-center ga-2">
           <span class="text-caption text-medium-emphasis">Label</span>
           <editable-field v-model="labelModel" class="flex-grow-1" />
@@ -35,7 +35,6 @@
             v-for="(attr, idx) in entry.attributes"
             :key="idx"
             :attribute="attr"
-            :index="idx"
             :entry-label="labelModel"
             @remove="removeAttribute(idx)"
             @update="(newAttr) => updateAttribute(idx, newAttr)"
@@ -103,15 +102,29 @@ const removeAttribute = (idx: number): Promise<void> => {
   return nextTick()
 }
 
-const labelModel = ref(entry.label)
+const labelModel = ref(entry.label ?? '')
+
 watch(labelModel, (newLabel) => {
   update({ label: newLabel })
 })
+
+watch(
+  () => entry.label,
+  (nextLabel) => {
+    if ((nextLabel ?? '') !== labelModel.value) {
+      labelModel.value = nextLabel ?? ''
+    }
+  }
+)
 </script>
 
 <style scoped>
 .entry-panel {
   border: 1px solid var(--v-theme-outline-variant);
   border-radius: 8px;
+}
+
+.entry-body {
+  padding-top: 8px;
 }
 </style>

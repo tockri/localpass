@@ -7,7 +7,7 @@ import { DropResult } from 'vue-dndrop'
 export type PassEntryListModel = {
   passEntryList: Ref<PassEntry[]>
   init: () => Promise<void>
-  create: () => Promise<void>
+  create: () => Promise<PassEntry | null>
   update: (id: string, input: Partial<PassEntry>) => Promise<void>
   remove: (id: string) => Promise<void>
   arrange: (dropResult: DropResult) => Promise<void>
@@ -21,12 +21,14 @@ const init = (list: Ref<PassEntry[]>) => async (): Promise<void> => {
   }
 }
 
-const create = (list: Ref<PassEntry[]>) => async (): Promise<void> => {
+const create = (list: Ref<PassEntry[]>) => async (): Promise<PassEntry | null> => {
   const backend = useBackend()
   const createdR = await backend.PassEntry.create()
   if (createdR.success) {
     list.value.push(createdR.value)
+    return createdR.value
   }
+  return null
 }
 
 const update =
@@ -59,7 +61,6 @@ const remove =
 const arrange =
   (list: Ref<PassEntry[]>) =>
   async (dropResult: DropResult): Promise<void> => {
-    console.log({ dropResult, list })
     const target = list.value[dropResult.removedIndex]
     list.value.splice(dropResult.removedIndex, 1)
     const dstIndex =

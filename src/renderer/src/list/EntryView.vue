@@ -18,18 +18,6 @@
 
         <v-divider />
 
-        <div class="d-flex align-center justify-space-between">
-          <span class="text-subtitle-2 text-medium-emphasis">Attributes</span>
-          <div class="d-flex ga-2">
-            <v-btn size="small" variant="text" @click="addTextAttribute">
-              <v-icon icon="mdi:mdi-plus" start />Add text
-            </v-btn>
-            <v-btn size="small" variant="text" @click="addPasswordAttribute">
-              <v-icon icon="mdi:mdi-plus" start />Add password
-            </v-btn>
-          </div>
-        </div>
-
         <div class="d-flex flex-column ga-3">
           <attribute-view
             v-for="(attr, idx) in entry.attributes"
@@ -39,6 +27,16 @@
             @remove="removeAttribute(idx)"
             @update="(newAttr) => updateAttribute(idx, newAttr)"
           />
+          <div class="d-flex align-center">
+            <div class="d-flex ga-2 ml-auto">
+              <v-btn size="small" variant="text" @click="addTextAttribute">
+                <v-icon icon="mdi:mdi-plus" start />Add text
+              </v-btn>
+              <v-btn size="small" variant="text" @click="addPasswordAttribute">
+                <v-icon icon="mdi:mdi-plus" start />Add password
+              </v-btn>
+            </div>
+          </div>
         </div>
       </div>
     </v-expansion-panel-text>
@@ -120,7 +118,8 @@ watch(
 
 <style scoped lang="postcss">
 .entry-panel {
-  @apply rounded-lg border border-solid border-vuetify-outline;
+  @apply rounded-lg border border-solid;
+  border-color: rgb(var(--v-theme-outlineVariant));
 }
 
 .entry-body {

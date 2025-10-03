@@ -118,13 +118,12 @@ watch(
 )
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .entry-panel {
-  border: 1px solid var(--v-theme-outline-variant);
-  border-radius: 8px;
+  @apply rounded-lg border border-solid border-vuetify-outline;
 }
 
 .entry-body {
-  padding-top: 8px;
+  @apply pt-2;
 }
 </style>

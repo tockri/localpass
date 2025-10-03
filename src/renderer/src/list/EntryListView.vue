@@ -47,7 +47,7 @@ const filteredEntries = computed(() => {
 
 <template>
   <div class="entry-list-view d-flex flex-column ga-4 my-2">
-    <div class="d-flex align-center ga-2">
+    <div class="d-flex align-center ga-2 entry-list-view__search">
       <v-text-field
         v-model="searchTerm"
         label="Search entries"
@@ -79,15 +79,16 @@ const filteredEntries = computed(() => {
   <toast />
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .entry-list-view {
-  max-width: 720px;
-  margin: 0 auto;
+  @apply mx-auto max-w-[720px];
 }
 
 .entry-panels {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  @apply flex flex-col gap-3;
+}
+
+.entry-list-view__search {
+  @apply sticky top-0 z-[2] py-2 bg-[rgb(var(--v-theme-surface))];
 }
 </style>

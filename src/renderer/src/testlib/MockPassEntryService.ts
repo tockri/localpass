@@ -9,40 +9,27 @@ export class MockPassEntryService implements PassEntryService {
   }
 
   getAll(): AsyncResult<readonly PassEntry[]> {
-    return this.util.wrap('getAll', () => [
-      {
-        id: '1',
-        label: 'label1',
-        attributes: [
-          {
-            type: 'string',
-            label: 'attr1',
-            value: 'value1'
-          },
-          {
-            type: 'password',
-            label: 'attr2',
-            value: 'value2'
-          }
-        ]
-      } satisfies PassEntry,
-      {
-        id: '2',
-        label: 'label2',
-        attributes: [
-          {
-            type: 'string',
-            label: 'attr3',
-            value: 'value3'
-          },
-          {
-            type: 'password',
-            label: 'attr4',
-            value: 'value4'
-          }
-        ]
-      } satisfies PassEntry
-    ])
+    return this.util.wrap('getAll', () =>
+      new Array(30).fill(0).map(
+        (_, i) =>
+          ({
+            id: `id-${i}`,
+            label: `label${i}`,
+            attributes: [
+              {
+                type: 'string',
+                label: 'attr1',
+                value: `value1-${i}`
+              },
+              {
+                type: 'password',
+                label: 'attr2',
+                value: `value2-${i}`
+              }
+            ]
+          }) satisfies PassEntry
+      )
+    )
   }
 
   create(): AsyncResult<PassEntry> {

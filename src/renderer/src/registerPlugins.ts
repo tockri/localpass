@@ -8,7 +8,24 @@ import 'vuetify/styles'
 
 const vuetify = createVuetify({
   components,
-  directives
+  directives,
+  theme: {
+    defaultTheme: 'light',
+    themes: {
+      light: {
+        colors: {
+          outline: '#49454F',
+          outlineVariant: '#CAC4D0'
+        }
+      },
+      dark: {
+        colors: {
+          outline: '#CAC4D0',
+          outlineVariant: '#49454F'
+        }
+      }
+    }
+  }
 })
 
 export const registerPlugins = (app: App<Element>): void => {

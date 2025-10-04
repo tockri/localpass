@@ -1,11 +1,11 @@
 <template>
-  <div class="d-flex ga-2 align-start">
-    <editable-field v-model="labelModel" class="flex-grow-1" />
+  <div class="d-flex ga-2 align-center">
+    <editable-field v-model="labelModel" class="" />
     <editable-field
       v-model="valueModel"
       :type="attribute.type === 'password' ? 'password' : 'text'"
       :copy-message="copyMessage"
-      class="attr-value"
+      class="attr-value flex-grow-1"
     />
     <v-btn icon size="x-small" variant="text" @click="emits('remove')">
       <v-icon icon="mdi:mdi-close" />

@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panel class="entry-panel" :value="entry.id">
-    <v-expansion-panel-title expand-icon="mdi:mdi-menu-down">
+    <v-expansion-panel-title expand-icon="mdi:mdi-chevron-down" collapse-icon="mdi:mdi-chevron-up">
       <div class="d-flex align-center w-100">
         <span class="text-body-1 text-high-emphasis">{{ displayLabel }}</span>
         <v-spacer />
@@ -10,11 +10,8 @@
       </div>
     </v-expansion-panel-title>
     <v-expansion-panel-text>
-      <div class="entry-body d-flex flex-column ga-4">
-        <div class="d-flex align-center ga-2">
-          <span class="text-caption text-medium-emphasis">Label</span>
-          <editable-field v-model="labelModel" class="flex-grow-1" />
-        </div>
+      <div class="entry-body d-flex flex-column ga-2">
+        <editable-field v-model="labelModel" class="flex-grow-1" />
 
         <v-divider />
 
